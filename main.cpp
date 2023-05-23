@@ -5,6 +5,8 @@
 #include <conio.h> ///para o getch()
 ///https://stackoverflow.com/questions/34474627/linux-equivalent-for-conio-h-getch
 
+#define MAXIMO_X 35
+#define ESPACO_CANO = 5;
 using namespace std;
 
 
@@ -31,102 +33,62 @@ int main()
     cursorInfo.bVisible = false; // set the cursor visibility
     SetConsoleCursorInfo(out, &cursorInfo);
     //FIM: COMANDOS PARA QUE O CURSOR N�O FIQUE PISCANDO NA TELA
-    //IN�CIO: COMANDOS PARA REPOSICIONAR O CURSOR NO IN�CIO DA TELA
+    //INICIO: COMANDOS PARA REPOSICIONAR O CURSOR NO IN�CIO DA TELA
     COORD coord;
     //FIM: COMANDOS PARA REPOSICIONAR O CURSOR NO IN�CIO DA TELA
     ///ALERTA: N�O MODIFICAR O TRECHO DE C�DIGO, ACIMA.
 
+    int xPassaroX = 5, xPassaroY = 10;
+    int xObstaculoX = MAXIMO_X;
+    int xNovoObstaculoX = MAXIMO_X / 2;
+    int xObstaculosY;
+    int xTecla;
+    int xPlacar = 0;
 
-    int bird_x=5, bird_y=10;
-    int obstaculo_x=129, obstaculo_y;
-    int tecla;
-
-    ///DESENHO DO CEN�RIO
-    cout<<"----------------------------------------------------------------------------------------------------------------------------------";
-    cout<<"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
-    cout<<"----------------------------------------------------------------------------------------------------------------------------------";
+    srand(time(NULL));
 
     Sleep(2000);
     while (true) { //esse la�o faz o jogo rodar para sempre
-
+        cout << "------------------ " << xPlacar << " ------------------";
+        cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+        cout << "--------------------------------------";
         ///POSICIONA O PÁSSARO
 
-        ///POSICIONA O OBST�CULO
+        ///POSICIONA OS OBSTACULOS
+        xObstaculosY = 1;
+        while (xObstaculosY < 20) {
+            coord.X = xObstaculoX;
+            coord.Y = xObstaculosY;
+            int xPosicaoAberturaObstaculo = rand() % 15 + 3;
 
-        obstaculo_y=1;
-        while(obstaculo_y<20){
-            coord.X = obstaculo_x;    coord.Y = obstaculo_y;
             SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
-            if(obstaculo_y<5 || obstaculo_y>7){
+            if(xObstaculosY < 5 || xObstaculosY > 7){
                 cout<<char(219);
-            } else {
-                cout<<" ";
             }
 
-            coord.X = obstaculo_x + 5;
+            coord.X = xNovoObstaculoX;
+            coord.Y = xObstaculosY;
+
             SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
-            cout<<" ";
-
-            int espaco_entre_obstaculos = 120;
-            int espaco_entre = 20;
-
-            int novo_x = obstaculo_x + 10;
-            if(obstaculo_x < espaco_entre_obstaculos) {
-                coord.X = novo_x;
-                coord.Y = obstaculo_y;
-                SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
-                if(obstaculo_y<3 || obstaculo_y>5){
-                    cout<<char(219);
-                } else {
-                    cout<<" ";
-                }
-
-                coord.X = novo_x + 5;
-                SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
-                cout<<" ";
+            if(xObstaculosY < 3 || xObstaculosY > 5){
+                cout<<char(219);
             }
 
-
-            int novo_novo_x = novo_x + 10;
-            espaco_entre_obstaculos -= espaco_entre;
-            if(obstaculo_x < espaco_entre_obstaculos) {
-                coord.X = novo_novo_x;
-                coord.Y = obstaculo_y;
-                SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
-                if(obstaculo_y<3 || obstaculo_y>5){
-                    cout<<char(219);
-                } else {
-                    cout<<" ";
-                }
-
-                coord.X = novo_novo_x + 5;
-                SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
-                cout<<" ";
+            xObstaculosY++;
+            if(xObstaculoX <= 0) {
+                xObstaculoX = MAXIMO_X;
             }
-
-            int novo_novo_novo_x = novo_novo_x + 10;
-            espaco_entre_obstaculos -= espaco_entre;
-            if(obstaculo_x < espaco_entre_obstaculos) {
-                coord.X = novo_novo_novo_x;
-                coord.Y = obstaculo_y;
-                SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
-                if(obstaculo_y<3 || obstaculo_y>5){
-                    cout<<char(219);
-                } else {
-                    cout<<" ";
-                }
-
-                coord.X = novo_novo_novo_x + 5;
-                SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
-                cout<<" ";
+            if(xNovoObstaculoX <= 0) {
+                xNovoObstaculoX = MAXIMO_X;
             }
-            obstaculo_y++;
         }
 
-        obstaculo_x--;
+        xObstaculoX--;
+        xNovoObstaculoX--;
 
         ///TEMPO DE ESPERA
         Sleep(200);
+        system("cls");
     }
 
     return 0;
