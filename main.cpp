@@ -51,10 +51,11 @@ int main()
     int xPosicaoAberturaObstaculoY = 0;
     int xPosicaoAberturaObstaculo2Y = 0;
     int xTeclaPressionada;
+    int xVelocidade = 200;
 
     srand(time(NULL));
-    Sleep(2000);
-    while (true) { //esse la�o faz o jogo rodar para sempre
+    Sleep(1000);
+    while () { //esse la�o faz o jogo rodar para sempre
         cout << "------------------ " << xPlacar << " ------------------";
         cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
         cout << "--------------------------------------";
@@ -80,10 +81,6 @@ int main()
             SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
             cout << xPlacar;
 
-            if(xObstaculoX <= 0) {
-                xObstaculoX = MAXIMO_X;
-                xPosicaoAberturaObstaculoY = (rand() % 13) + 3;
-            }
 
             coord.X = xObstaculoX;
             coord.Y = xObstaculosY;
@@ -103,6 +100,44 @@ int main()
             xObstaculosY++;
         }
 
+        if(xBirdY < 0 && xBirdY > 20) {
+            break;
+        }
+
+        if(xBirdX == xObstaculoX) {
+            if(xBirdY > xPosicaoAberturaObstaculoY && xBirdY < xPosicaoAberturaObstaculoY + TAMANHO_ESPACO ) {
+                break;
+            }
+            else {
+                xPlacar++;
+
+                if(xPlacar % 5 == 0) {
+                    xVelocidade = xVelocidade *  0.90;
+                }
+            }
+        }
+
+        else if(xBirdX == xNovoObstaculoX) {
+            if(xBirdY > xPosicaoAberturaObstaculo2Y || xBirdY < xPosicaoAberturaObstaculo2Y + TAMANHO_ESPACO ) {
+                break;
+            }
+            else {
+                xPlacar++;
+
+                if(xPlacar % 5 == 0) {
+                    xVelocidade = xVelocidade *  0.90;
+                }
+            }
+        }
+
+
+        xObstaculoX--;
+        xNovoObstaculoX--;
+
+        if(xObstaculoX <= 0) {
+            xObstaculoX = MAXIMO_X;
+            xPosicaoAberturaObstaculoY = (rand() % 13) + 3;
+        }
 
         if(xNovoObstaculoX <= 0) {
             xNovoObstaculoX = MAXIMO_X;
@@ -117,30 +152,7 @@ int main()
             xPosicaoAberturaObstaculo2Y = (xPosicaoAberturaObstaculoY + xOffset);
         }
 
-        if(xBirdX == xObstaculoX) {
-            if(xBirdY > xPosicaoAberturaObstaculoY && xBirdY < xPosicaoAberturaObstaculoY + TAMANHO_ESPACO ) {
-                break;
-            }
-            else {
-                xPlacar++;
-            }
-        }
-
-        else if(xBirdX == xNovoObstaculoX) {
-            if(xBirdY > xPosicaoAberturaObstaculo2Y || xBirdY < xPosicaoAberturaObstaculo2Y + TAMANHO_ESPACO ) {
-                break;
-            }
-            else {
-                xPlacar++;
-            }
-        }
-
-        xObstaculoX--;
-        xNovoObstaculoX--;
-
-        ///TEMPO DE ESPERA
-
-        Sleep(200);
+        Sleep(xVelocidade);
         system("cls");
     }
 
