@@ -2,13 +2,17 @@
 #include <iostream>
 #include <windows.h>
 #include <stdlib.h>
-#include <conio.h> ///para o getch()
-///https://stackoverflow.com/questions/34474627/linux-equivalent-for-conio-h-getch
+#include <conio.h>
+#include <time.h>
 
+#define TAMANHO_ESPACO 3
+#define OFFSET_ESPACO 2
 #define MAXIMO_X 35
-#define ESPACO_CANO = 5;
-using namespace std;
+#define ESPACO_CANO = 5
+#define PLACAR_X 19
+#define PLACAR_Y 0
 
+using namespace std;
 
 /**
     F L A P B I R D (M2 Algoritmos)
@@ -20,7 +24,6 @@ using namespace std;
     - Deixar a pontua��o vis�vel durante todo o jogo
     - Definir marcos para acelerar a velocidade
 */
-
 
 
 int main()
@@ -39,30 +42,53 @@ int main()
     ///ALERTA: N�O MODIFICAR O TRECHO DE C�DIGO, ACIMA.
 
     int xPassaroX = 5, xPassaroY = 10;
-    int xObstaculoX = MAXIMO_X;
+    int xBirdX = 5, xBirdY = 10;
+    int xObstaculoX = 0;
     int xNovoObstaculoX = MAXIMO_X / 2;
     int xObstaculosY;
     int xTecla;
     int xPlacar = 0;
+    int xPosicaoAberturaObstaculoY = 0;
+    int xPosicaoAberturaObstaculo2Y = 0;
+    int xTeclaPressionada;
 
     srand(time(NULL));
-
     Sleep(2000);
     while (true) { //esse la�o faz o jogo rodar para sempre
         cout << "------------------ " << xPlacar << " ------------------";
         cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
         cout << "--------------------------------------";
-        ///POSICIONA O PÁSSARO
 
-        ///POSICIONA OS OBSTACULOS
+        if (kbhit()) {
+            xTeclaPressionada=getch();
+        }
+
+        if ( xTeclaPressionada == 'w' ){
+            xBirdY--;
+            xTeclaPressionada = '0';
+        } else {
+            xBirdY++;
+        }
+
+        coord.X = xBirdX;    coord.Y = xBirdY;
+        SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+        cout<<char(190);
         xObstaculosY = 1;
         while (xObstaculosY < 20) {
+            coord.X = PLACAR_X;
+            coord.Y = PLACAR_Y;
+            SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+            cout << xPlacar;
+
+            if(xObstaculoX <= 0) {
+                xObstaculoX = MAXIMO_X;
+                xPosicaoAberturaObstaculoY = (rand() % 13) + 3;
+            }
+
             coord.X = xObstaculoX;
             coord.Y = xObstaculosY;
-            int xPosicaoAberturaObstaculo = rand() % 15 + 3;
-
             SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
-            if(xObstaculosY < 5 || xObstaculosY > 7){
+            if(xObstaculosY < xPosicaoAberturaObstaculoY || xObstaculosY > xPosicaoAberturaObstaculoY + TAMANHO_ESPACO ){
                 cout<<char(219);
             }
 
@@ -70,16 +96,42 @@ int main()
             coord.Y = xObstaculosY;
 
             SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
-            if(xObstaculosY < 3 || xObstaculosY > 5){
+            if(xObstaculosY < xPosicaoAberturaObstaculo2Y || xObstaculosY > xPosicaoAberturaObstaculo2Y + TAMANHO_ESPACO){
                 cout<<char(219);
             }
 
             xObstaculosY++;
-            if(xObstaculoX <= 0) {
-                xObstaculoX = MAXIMO_X;
+        }
+
+
+        if(xNovoObstaculoX <= 0) {
+            xNovoObstaculoX = MAXIMO_X;
+            int xOffset = 0;
+
+            if ((rand() % 2) == 1) {
+                xOffset = -OFFSET_ESPACO;
             }
-            if(xNovoObstaculoX <= 0) {
-                xNovoObstaculoX = MAXIMO_X;
+            else {
+                xOffset = OFFSET_ESPACO;
+            }
+            xPosicaoAberturaObstaculo2Y = (xPosicaoAberturaObstaculoY + xOffset);
+        }
+
+        if(xBirdX == xObstaculoX) {
+            if(xBirdY > xPosicaoAberturaObstaculoY && xBirdY < xPosicaoAberturaObstaculoY + TAMANHO_ESPACO ) {
+                break;
+            }
+            else {
+                xPlacar++;
+            }
+        }
+
+        else if(xBirdX == xNovoObstaculoX) {
+            if(xBirdY > xPosicaoAberturaObstaculo2Y || xBirdY < xPosicaoAberturaObstaculo2Y + TAMANHO_ESPACO ) {
+                break;
+            }
+            else {
+                xPlacar++;
             }
         }
 
@@ -87,6 +139,7 @@ int main()
         xNovoObstaculoX--;
 
         ///TEMPO DE ESPERA
+
         Sleep(200);
         system("cls");
     }
