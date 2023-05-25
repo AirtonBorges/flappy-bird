@@ -8,7 +8,6 @@
 #define TAMANHO_ESPACO 3
 #define OFFSET_ESPACO 2
 #define MAXIMO_X 35
-#define ESPACO_CANO = 5
 #define PLACAR_X 19
 #define PLACAR_Y 0
 
@@ -41,19 +40,20 @@ int main()
     //FIM: COMANDOS PARA REPOSICIONAR O CURSOR NO IN�CIO DA TELA
     ///ALERTA: N�O MODIFICAR O TRECHO DE C�DIGO, ACIMA.
 
+
+    srand(time(NULL));
     int xPassaroX = 5, xPassaroY = 10;
     int xBirdX = 5, xBirdY = 10;
-    int xObstaculoX = 0;
-    int xNovoObstaculoX = MAXIMO_X / 2;
+    int xObstaculoX = MAXIMO_X / 2;
+    int xNovoObstaculoX = 0;
     int xObstaculosY;
     int xTecla;
     int xPlacar = 0;
-    int xPosicaoAberturaObstaculoY = 0;
+    int xPosicaoAberturaObstaculoY = (rand() %15) + 3;
     int xPosicaoAberturaObstaculo2Y = 0;
     int xTeclaPressionada;
     int xVelocidade = 200;
 
-    srand(time(NULL));
     Sleep(1000);
     cout << "-----------------------------------------------------------";
     cout << "\n\n\n\n"
@@ -84,6 +84,26 @@ int main()
             xBirdY++;
         }
 
+        if(xObstaculoX <= 0) {
+            xObstaculoX = MAXIMO_X;
+
+            srand(45);
+            xPosicaoAberturaObstaculoY = (rand() %15) + 3;
+        }
+
+        if(xNovoObstaculoX <= 0) {
+            xNovoObstaculoX = MAXIMO_X;
+            int xOffset = 0;
+
+            if ((rand() % 2) == 1) {
+                xOffset = -OFFSET_ESPACO;
+            }
+            else {
+                xOffset = OFFSET_ESPACO;
+            }
+            xPosicaoAberturaObstaculo2Y = (xPosicaoAberturaObstaculoY + xOffset);
+        }
+
         coord.X = xBirdX;    coord.Y = xBirdY;
         SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
         cout<<char(190);
@@ -93,7 +113,6 @@ int main()
             coord.Y = PLACAR_Y;
             SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
             cout << xPlacar;
-
 
             coord.X = xObstaculoX;
             coord.Y = xObstaculosY;
@@ -113,12 +132,12 @@ int main()
             xObstaculosY++;
         }
 
-        if(xBirdY < 0 && xBirdY > 20) {
+        if(xBirdY < 0 || xBirdY > 20) {
             break;
         }
 
         if(xBirdX == xObstaculoX) {
-            if(xBirdY > xPosicaoAberturaObstaculoY && xBirdY < xPosicaoAberturaObstaculoY + TAMANHO_ESPACO ) {
+            if(xBirdY < xPosicaoAberturaObstaculoY || xBirdY > xPosicaoAberturaObstaculoY + TAMANHO_ESPACO ) {
                 break;
             }
             else {
@@ -131,19 +150,7 @@ int main()
         }
 
         else if(xBirdX == xNovoObstaculoX) {
-            if(xBirdY > xPosicaoAberturaObstaculo2Y || xBirdY < xPosicaoAberturaObstaculo2Y + TAMANHO_ESPACO ) {
-                system("cls");
-                cout << "----------------------------------------------------------";
-                cout << "\n\n\n \n"
-                        " _____ ____  _      _____   ____  _     _____ ____ \n"
-                        "/  __//  _ \\/ \\__/|/  __/  /  _ \\/ \\ |\\/  __//  __\\\n"
-                        "| |  _| / \\|| |\\/|||  \\    | / \\|| | //|  \\  |  \\/|\n"
-                        "| |_//| |-||| |  |||  /_   | \\_/|| \\// |  /_ |    /\n"
-                        "\\____\\\\_/ \\|\\_/  \\|\\____\\  \\____/\\__/  \\____\\\\_/\\_\\\n"
-                        "\n"
-                        "Pressione Ctrl + F5 para reiniciar o jogo"
-                        "                                                    \n\n\n";
-                cout << "----------------------------------------------------------";
+            if(xBirdY < xPosicaoAberturaObstaculo2Y || xBirdY > xPosicaoAberturaObstaculo2Y + TAMANHO_ESPACO ) {
                 break;
             }
             else {
@@ -159,27 +166,21 @@ int main()
         xObstaculoX--;
         xNovoObstaculoX--;
 
-        if(xObstaculoX <= 0) {
-            xObstaculoX = MAXIMO_X;
-            xPosicaoAberturaObstaculoY = (rand() % 13) + 3;
-        }
-
-        if(xNovoObstaculoX <= 0) {
-            xNovoObstaculoX = MAXIMO_X;
-            int xOffset = 0;
-
-            if ((rand() % 2) == 1) {
-                xOffset = -OFFSET_ESPACO;
-            }
-            else {
-                xOffset = OFFSET_ESPACO;
-            }
-            xPosicaoAberturaObstaculo2Y = (xPosicaoAberturaObstaculoY + xOffset);
-        }
-
         Sleep(xVelocidade);
         system("cls");
     }
 
+    system("cls");
+    cout << "----------------------------------------------------------";
+    cout << "\n\n\n\n"
+            " _____ ____  _      _____   ____  _     _____ ____ \n"
+            "/  __//  _ \\/ \\__/|/  __/  /  _ \\/ \\ |\\/  __//  __\\\n"
+            "| |  _| / \\|| |\\/|||  \\    | / \\|| | //|  \\  |  \\/|\n"
+            "| |_//| |-||| |  |||  /_   | \\_/|| \\// |  /_ |    /\n"
+            "\\____\\\\_/ \\|\\_/  \\|\\____\\  \\____/\\__/  \\____\\\\_/\\_\\\n"
+            "\n"
+            "Pressione Ctrl + F5 para reiniciar o jogo"
+            "                                                    \n\n\n";
+    cout << "----------------------------------------------------------";
     return 0;
 }
